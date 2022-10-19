@@ -11,5 +11,31 @@
 - Copy the `install.sh` file in the two VM, and launch that script in order to install EGO and libPSI
 
 # Without enclaves
+- Select one the VM created above, and open three terminals
+- For the first one, enter the following command
+```
+cd ~/psi/without-enclaves/server
+go run .
+```
+- For the second one, enter the following command:
+```
+cd ~/psi/without-enclaves/client
+go run . --file=../../data/data-100-all.csv
+```
+- For the first one, enter the following command:
+```
+cd ~/psi/without-enclaves/server
+go run .
+```
+- For the third one, enter the following command:
+```
+cd ~/psi/without-enclaves/client
+go run . --file=../../data/data-100-all.csv
+```
 
+If you want to test from two different VM, you can specify the `remoteURL` parameter as below:
+```
+cd ~/psi/without-enclaves/client
+go run . --file=../../data/data-100-all.csv --remoteURL=http://1.2.3.4:8080/upload
+```
 
