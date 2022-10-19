@@ -29,7 +29,7 @@ sudo apt-get -y install python3-pip python-is-python3
 sudo pip3 install cmake
 
 echo "$(tput setaf 1)6. Get sources$(tput sgr0)"
-git clone https://github.com/enedellec/cnam.git
+git clone https://github.com/enedellec/psi.git
 git clone https://github.com/osu-crypto/libPSI.git
 
 echo "$(tput setaf 1)7. LibPSI compilation$(tput sgr0)"
