@@ -32,6 +32,7 @@ func main() {
 	port := flag.String("port", "8080", "The port for the server")
 	flag.Parse()
 
+	// initialize the context for both clients
 	initClientData()
 
 	http.HandleFunc("/upload", uploadFileClient)
@@ -54,9 +55,11 @@ func uploadFileClient(w http.ResponseWriter, r *http.Request) {
 	} else if client2.isFree {
 		client2.isFree = false
 		processClientRequest(w, r, &client2)
+		// PSI is done, we restart the context for a next PSI computation
+		initClientData()
 	} else {
 		w.Header().Set("Content-Type", "plain/text")
-		fmt.Fprintf(w, "Sorry, I already got two dataset, next time may be?\n")
+		fmt.Fprintf(w, "Sorry, I am busy, next time may be?\n")
 	}
 }
 

@@ -33,15 +33,16 @@ func main() {
 		"myFile": mustOpen(*fileName),
 	}
 
-	// upload the file on the server
+	// upload the file on the server, and save the result in a file named 'result.txt'
 	err := upload(*remoteURL, values)
 	if err != nil {
 		log.Panic(err)
 	}
 }
 
-// Upload a file on a http server
+// Upload a file on a http server, and save the result in a file named 'result.txt'
 func upload(url string, values map[string]io.Reader) (err error) {
+
 	log.Println("upload() function started")
 
 	// catch the time in order to compute the duration at the end of that function
@@ -56,8 +57,8 @@ func upload(url string, values map[string]io.Reader) (err error) {
 			defer x.Close()
 		}
 		// add the file
-		if x, ok := r.(*os.File); ok {
-			if fw, err = w.CreateFormFile(key, x.Name()); err != nil {
+		if file, ok := r.(*os.File); ok {
+			if fw, err = w.CreateFormFile(key, file.Name()); err != nil {
 				return err
 			}
 		} else {
@@ -69,8 +70,8 @@ func upload(url string, values map[string]io.Reader) (err error) {
 		if _, err = io.Copy(fw, r); err != nil {
 			return err
 		}
-
 	}
+
 	// close the multipart writer, otherwise the request will
 	// not terminate the boundary properly
 	w.Close()
