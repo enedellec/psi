@@ -5,7 +5,7 @@
 # 5001 for the network performance test with iperf
 # 8080 for the EGO test
 
-# make sure that you added you own SSH key in the `parameters-client.json` and the `parameters-server.json` files before launching that script
+# make sure that you added you own SSH public key in the `parameters-client.json` and the `parameters-server.json` files before launching that script
 
 # exit when any command fails
 set -e
