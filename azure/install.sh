@@ -3,6 +3,8 @@
 # exit when any command fails
 set -e
 
+cd ~ 
+
 echo "$(tput setaf 1)1. Configure the Intel and Microsoft APT Repositories$(tput sgr0)"
 echo "deb [arch=amd64] https://download.01.org/intel-sgx/sgx_repo/ubuntu focal main" | sudo tee /etc/apt/sources.list.d/intel-sgx.list
 wget -qO - https://download.01.org/intel-sgx/sgx_repo/ubuntu/intel-sgx-deb.key | sudo apt-key add -
