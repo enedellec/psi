@@ -19,15 +19,15 @@
     - YYY corresponds to either *all* or *even-only* values; *all* means that SHA256 values have been generated from integers between 0 and (XXX-1), and *even-only* means that SHA256 values have been generated from even integers between 0 and (2*XXX-1).
 - For more information on the generation of data, you just need to have a look on the `main.go` file in the `data-generation` folder
  
-# PSI without enclaves on a single VM
+# PSI without enclaves in a single VM
 - Select one of the VM created above, and open two terminals
-- For the first one, enter the following command
+- In the first one, enter the following command
 ```
 cd ~/psi/without-enclaves/server
 go run .
 ```
 - The server will wait for incoming requests 
-- For the second one, enter the following command:
+- In the second one, enter the following command:
 ```
 cd ~/psi/without-enclaves/client
 go run . --file=../../data/data-100-all.csv
@@ -47,13 +47,13 @@ diff result.txt perfect_result.txt
 
 
 # PSI without enclaves on two different VM
-- If you want to test from two different VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server:
+- If you want to test from two different VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server that you must specify:
 ```
 cd ~/psi/without-enclaves/client
 go run . --file=../../data/data-100-all.csv --remoteURL=http://1.2.3.4:8080/upload
 ```
 
-# PSI with enclaves on a single VM
+# PSI with enclaves in a single VM
 - That project relies on remote attestation, and more specifically on the DCAP server provided by Microsoft in Azure. The source code is based on the [Azure Attestation Sample](https://github.com/edgelesssys/ego/tree/master/samples/azure_attestation) from the [Ego Open Source project](https://github.com/edgelesssys/ego).
 
 - Select one VM, the one corresponding to the server for example.
@@ -78,10 +78,33 @@ go build ra_client/client.go
 - You can check the result of the intersection in the `result.txt` file 
 
 # PSI with enclaves on two different VM
-- If you want to test with the server on a VM, and the clients on another VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server:
+- If you want to test with the server on a VM, and the clients on another VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server that you must specify:
 ```
 ./client -a 1.2.3.4 -file "../data/data-100-all.csv" -s `ego signerid public.pem`
 ./client -a 1.2.3.4 -file "../data/data-100-even-only.csv" -s `ego signerid public.pem`
 ```
-# libPSI
-
+# libPSI in a single VM
+- Select one of the VM created above, and open two terminals
+- In the first terminal, enter the following commands:
+``` 
+cd ~/libPSI/out/build/linux/frontend
+./frontend.exe -rr17a -r 1 -in ~/psi/data/data-100-all.csv -out output.csv
+``` 
+- In the second one, enter the following commands:
+``` 
+cd ~libPSI/out/build/linux/frontend
+./frontend.exe -rr17a -r 0 -in ~/psi/data/data-100-even-only.csv
+``` 
+- The result of the intersection is in the `output.csv` file, and it corresponds to a vector with 0 and 1 values
+# libPSI with two different VM
+- If the receiver and the sender are in two different VM, you must specify the IP address of the receiver.
+- In the first VM, you must enter the following commands for launching the receiver :
+``` 
+cd ~/libPSI/out/build/linux/frontend
+./frontend.exe -rr17a -r 1 -ip 0.0.0.0:1212 -in ~/psi/data/data-100-all.csv -out output.csv
+``` 
+- In the second one, you must enter the following commands for launching the sender (where `1.2.3.4` if the IP address of the receiver in the example below):
+``` 
+cd ~/libPSI/out/build/linux/frontend
+./frontend.exe -rr17a -r 0 -ip 1.2.3.4:1212 -in data-100-even-only.csv
+``` 
