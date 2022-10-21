@@ -49,3 +49,5 @@ cd ~/psi/without-enclaves/client
 go run . --file=../../data/data-100-all.csv --remoteURL=http://1.2.3.4:8080/upload
 ```
 
+# PSI with enclaves on a single VM
+That project works with remote attestation, and more specifically with the DCAP server provided by Microsoft in Azure.
