@@ -70,7 +70,7 @@ cd ~/psi/with-enclaves
 go build ra_client/client.go
 ```
 - As explained in the [Azure Attestation Sample](https://github.com/edgelesssys/ego/tree/master/samples/azure_attestation), the client expects the `signerID` (MRSIGNER) as an argument. The `signerID` can be derived from the signer's public key using `ego signerid`. 
-- You must launch the two clients in the second terminal :
+- Launch the two clients in the second terminal :
 ```
 ./client -file "../data/data-100-all.csv" -s `ego signerid public.pem`
 ./client -file "../data/data-100-even-only.csv" -s `ego signerid public.pem`
@@ -103,7 +103,7 @@ cd ~libPSI/out/build/linux/frontend
 cd ~/libPSI/out/build/linux/frontend
 ./frontend.exe -rr17a -r 1 -ip 0.0.0.0:1212 -in ~/psi/data/data-100-all.csv -out output.csv
 ``` 
-- In the second one, you must enter the following commands for launching the sender (where `1.2.3.4` if the IP address of the receiver in the example below):
+- In the second one, you must enter the following commands for launching the sender (where `1.2.3.4` is the IP address of the receiver in the example below):
 ``` 
 cd ~/libPSI/out/build/linux/frontend
 ./frontend.exe -rr17a -r 0 -ip 1.2.3.4:1212 -in data-100-even-only.csv
