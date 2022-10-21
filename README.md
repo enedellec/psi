@@ -20,24 +20,30 @@
 - For more information on the generation of data, you just need to have a look on the `main.go` file in the `data-generation` folder
  
 # PSI without enclaves on a single VM
-- Select one of the VM created above, and open three terminals
+- Select one of the VM created above, and open two terminals
 - For the first one, enter the following command
 ```
 cd ~/psi/without-enclaves/server
 go run .
 ```
+- The server will wait for incoming requests 
 - For the second one, enter the following command:
 ```
 cd ~/psi/without-enclaves/client
 go run . --file=../../data/data-100-all.csv
 ```
 - You can check the response of the request in the `result.txt` file, it should be written `You are the first one, I am waiting for your partner`.
-- For the third one, enter the following command:
+- Then, enter the following command, still in the second terminal:
 ```
-cd ~/psi/without-enclaves/client
 go run . --file=../../data/data-100-even-only.csv
 ```
 - You can check the response of the request in the `result.txt` file, you should find the result of the set intersection.
+- The content of the `result.txt` should be equal to the intersection between `data-100-all.csv` and `data-100-even-only.csv` files. To validate the result provided by the PSI server, you can try that command :
+```
+grep -Fx -f ../../data/data-100-all.csv ../../data/data-100-even-only.csv > perfect_result.txt
+diff result.txt perfect_result.txt
+```
+- It should not display any SHA256 hashes
 
 
 # PSI without enclaves on two different VM
@@ -60,15 +66,22 @@ ego run server
 ```
 - Then, open another terminal one the same VM, and build the client with a recent GO compiler:
 ```
+cd ~/psi/with-enclaves
 go build ra_client/client.go
 ```
 - As explained in the [Azure Attestation Sample](https://github.com/edgelesssys/ego/tree/master/samples/azure_attestation), the client expects the `signerID` (MRSIGNER) as an argument. The `signerID` can be derived from the signer's public key using `ego signerid`. 
 - You must launch the two clients in the second terminal :
 ```
-./client -file "../../data/data-100-all.txt" -s `ego signerid public.pem`
-./client -file "../../data/data-100-even-only.txt" -s `ego signerid public.pem`
+./client -file "../data/data-100-all.csv" -s `ego signerid public.pem`
+./client -file "../data/data-100-even-only.csv" -s `ego signerid public.pem`
 ```
 - You can check the result of the intersection in the `result.txt` file 
 
+# PSI with enclaves on two different VM
+- If you want to test with the server on a VM, and the clients on another VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server:
+```
+./client -a 1.2.3.4 -file "../data/data-100-all.csv" -s `ego signerid public.pem`
+./client -a 1.2.3.4 -file "../data/data-100-even-only.csv" -s `ego signerid public.pem`
+```
 # libPSI
 

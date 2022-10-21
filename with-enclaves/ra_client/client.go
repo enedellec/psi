@@ -15,20 +15,25 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/edgelesssys/ego/attestation"
 )
 
-// attestationProviderURL is the URL of the attestation provider
+/// upload a file on the PSI server thanks to a HTTP Post request
+//
+// receive in return either a message inviting to wait for the
+// uploading of the second fellow or the private set intersection
+// result
+
 const attestationProviderURL = "https://shareduks.uks.attest.azure.net"
 
 func main() {
+
 	log.Println("main() function started")
 
 	// parse the command line options
-	uploadEndpoint := flag.String("remoteEndPoint", "upload-client-1",
-		"The end point to call for uploading the file")
-	fileName := flag.String("file", "data.txt",
+	fileName := flag.String("file", "data.csv",
 		"Filename to upload")
 	signerArg := flag.String("s", "", "signer ID")
 	serverAddr := flag.String("a", "localhost:8080", "server address")
@@ -73,16 +78,13 @@ func main() {
 	tlsConfig = &tls.Config{RootCAs: x509.NewCertPool(), ServerName: "localhost"}
 	tlsConfig.RootCAs.AddCert(cert)
 
-	httpGet(tlsConfig, serverURL+"/secret?s=thisIsTheSecret")
-	fmt.Println("🔒 Sent secret over attested TLS channel.")
-
 	// prepare the data to send
 	values := map[string]io.Reader{
 		"myFile": mustOpen(*fileName),
 	}
 
 	// upload the file on the server
-	err = upload(tlsConfig, serverURL+"/"+*uploadEndpoint, values)
+	err = upload(tlsConfig, serverURL+"/upload", values)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -134,7 +136,9 @@ func httpGet(tlsConfig *tls.Config, url string) []byte {
 // Upload a file on a http server
 func upload(tlsConfig *tls.Config, url string, values map[string]io.Reader) (err error) {
 	log.Println("upload() function started")
-	log.Println("url : ", url)
+
+	// catch the time in order to compute the duration at the end of that function
+	start := time.Now()
 
 	client := http.Client{Transport: &http.Transport{TLSClientConfig: tlsConfig}}
 
@@ -147,8 +151,8 @@ func upload(tlsConfig *tls.Config, url string, values map[string]io.Reader) (err
 			defer x.Close()
 		}
 		// add the file
-		if x, ok := r.(*os.File); ok {
-			if fw, err = w.CreateFormFile(key, x.Name()); err != nil {
+		if file, ok := r.(*os.File); ok {
+			if fw, err = w.CreateFormFile(key, file.Name()); err != nil {
 				return err
 			}
 		} else {
@@ -185,6 +189,18 @@ func upload(tlsConfig *tls.Config, url string, values map[string]io.Reader) (err
 		err = fmt.Errorf("bad status: %s", res.Status)
 		return err
 	}
+
+	// display the duration of the upload (and potentially the PSI computation)
+	duration := time.Since(start)
+	log.Println("[duration (in ms)] : upload + potentially the PSI computation : ", duration.Milliseconds())
+
+	// save the result of the POST request in a file
+	out, err := os.Create("result.txt")
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+	io.Copy(out, res.Body)
 
 	log.Println("upload() function finished")
 
