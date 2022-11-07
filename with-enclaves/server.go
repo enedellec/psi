@@ -124,9 +124,9 @@ func processClientRequest(w http.ResponseWriter, r *http.Request, client *Client
 func processPostRequest(w http.ResponseWriter, r *http.Request, client *Client) {
 	log.Println("uploadFile() started")
 
-	// Parse our multipart form, 10 << 20 specifies a maximum
-	// upload of 10 MB files.
-	r.ParseMultipartForm(10 << 20)
+	// Parse our multipart form
+	// 70 MB is the max size for uploading a file
+	r.ParseMultipartForm(70000000)
 
 	// FormFile returns the first file for the given key `myFile`
 	// it also returns the FileHeader so we can get the Filename,
