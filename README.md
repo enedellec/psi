@@ -47,10 +47,10 @@ diff result.txt perfect_result.txt
 
 
 # PSI without enclaves on two different VM
-- If you want to test from two different VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server that you must specify:
+- If you want to test from two different VM, you can specify the `remoteUrl` parameter as below, where `1.2.3.4` is the IP address of the server that you must specify:
 ```
 cd ~/psi/without-enclaves/client
-go run . --file=../../data/data-100-all.csv --remoteURL=http://1.2.3.4:8080/upload
+go run . --file=../../data/data-100-all.csv --remoteUrl=http://1.2.3.4:8080/upload
 ```
 
 # PSI with enclaves in a single VM
@@ -78,10 +78,10 @@ go build ra_client/client.go
 - You can check the result of the intersection in the `result.txt` file 
 
 # PSI with enclaves on two different VM
-- If you want to test with the server on a VM, and the clients on another VM, you can specify the `remoteURL` parameter as below, where `1.2.3.4` is the IP address of the server that you must specify:
+- If you want to test with the server on a VM, and the clients on another VM, you can specify the `a` parameter as below, where `1.2.3.4` is the IP address of the server that you must specify:
 ```
-./client -a 1.2.3.4 -file "../data/data-100-all.csv" -s `ego signerid public.pem`
-./client -a 1.2.3.4 -file "../data/data-100-even-only.csv" -s `ego signerid public.pem`
+./client -a 1.2.3.4:8080 -file "../data/data-100-all.csv" -s `ego signerid public.pem`
+./client -a 1.2.3.4:8080 -file "../data/data-100-even-only.csv" -s `ego signerid public.pem`
 ```
 # libPSI in a single VM
 - Select one of the VM created above, and open two terminals
@@ -92,7 +92,7 @@ cd ~/libPSI/out/build/linux/frontend
 ``` 
 - In the second one, enter the following commands:
 ``` 
-cd ~libPSI/out/build/linux/frontend
+cd ~/libPSI/out/build/linux/frontend
 ./frontend.exe -rr17a -r 0 -in ~/psi/data/data-100-even-only.csv
 ``` 
 - The result of the intersection is in the `output.csv` file, and it corresponds to a vector with 0 and 1 values
