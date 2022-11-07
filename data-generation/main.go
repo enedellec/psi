@@ -53,7 +53,7 @@ func main() {
 	sort.Strings(data)
 
 	// save the generated hashes in a file
-	filename := fmt.Sprintf("data-%v-%v.txt", *count, profile)
+	filename := fmt.Sprintf("data-%v-%v.csv", *count, profile)
 	file, err := os.Create(filename)
 	if err != nil {
 		log.Fatalln(err)
