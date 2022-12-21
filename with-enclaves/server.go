@@ -46,7 +46,7 @@ func main() {
 	cert, priv := createCertificate()
 	fmt.Println("🆗 Generated Certificate.")
 
-	// Cerate an Azure Attestation Token.
+	// Create an Azure Attestation Token.
 	token, err := enclave.CreateAzureAttestationToken(cert, attestationProviderURL)
 	if err != nil {
 		panic(err)
